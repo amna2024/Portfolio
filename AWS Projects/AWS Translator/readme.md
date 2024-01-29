@@ -1,1 +1,2 @@
-
+# **Machine Learning Magic with AWS Translate**
+Welcome to the enchanting world of machine learning where the power of AWS services comes together to weave linguistic transformations. In this project, we leverage the mystical trio of S3 buckets, Lambda functions, and AWS Translate to bring about the magic of language translation. With the blessings granted through IAM permissions, you now have the ability to seamlessly translate any text to your heart's desire.

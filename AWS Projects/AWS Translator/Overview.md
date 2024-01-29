@@ -1,5 +1,7 @@
 # **Project Overview**
 **Components**
+
+
 1- S3 Bucket:
 ----------
 A sacred repository holding the texts awaiting translation. Upload your text files here, and let the magic unfold.

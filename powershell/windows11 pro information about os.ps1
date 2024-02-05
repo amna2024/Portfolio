@@ -1,4 +1,4 @@
-﻿# Set the path for the output file (Rashad)
+﻿# Set the path for the output file
 $outputFilePath = "C:\temp\Windows11Pro.txt"
 
 # Get basic system information

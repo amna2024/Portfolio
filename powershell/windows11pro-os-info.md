@@ -1,4 +1,49 @@
-﻿# Set the path for the output file
+# Windows 11 Pro Server Information Script
+
+## Description
+
+This PowerShell script gathers comprehensive system details and network information from a Windows 11 Pro environment. It covers essential aspects such as the computer system, operating system, processor, disks, network adapters, and domain affiliation.
+
+## Usage
+
+1. **Run the Script:**
+   Execute the PowerShell script to collect server information.
+
+2. **Output File:**
+   The server information is saved in a text file at the following path:
+   `C:\temp\Windows11Pro.txt`
+
+3. **Information Included:**
+   - **System Information:**
+     - Computer Name
+     - Operating System
+     - Windows Version
+     - Processor
+     - Memory
+
+   - **Disk Information:**
+     - Drive
+     - Model
+     - Size
+
+   - **Network Information:**
+     - Adapter
+     - IP Address
+     - Subnet Mask
+     - DHCP Enabled
+     - Default Gateway
+     - DNS Servers
+     - DHCP Scope Range (if accessible)
+
+   - **Domain Information:**
+     - Domain affiliation
+
+---
+
+## Script Content
+
+```powershell
+# Set the path for the output file
 $outputFilePath = "C:\temp\Windows11Pro.txt"
 
 # Get basic system information
@@ -67,3 +112,12 @@ $report.AppendLine("Domain: $($domainInfo.Domain)")
 $report.ToString() | Out-File -FilePath $outputFilePath -Encoding UTF8
 
 Write-Host "Server information saved to: $outputFilePath"
+```
+
+---
+
+## Notes
+
+- Run the script with appropriate permissions.
+- Adjust file paths and names as needed.
+- The script uses PowerShell cmdlets like `Get-CimInstance` and `Get-DhcpServerv4Scope`. Ensure these cmdlets are available in your PowerShell environment.

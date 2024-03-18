@@ -1,0 +1,42 @@
+$systemPath = "CN=System,DC=Rstile,DC=se"
+$containerPath = "CN=System Management," + $systemPath
+$DC01 = "DC-01"
+   
+New-ADObject -Name "System Management" -Type Container -Path $systemPath
+
+# Set the user or group to delegate control to
+# In this case, it's the computer itself, so we use its distinguished name
+$delegateUser = (Get-ADComputer $DC01).DistinguishedName
+
+# Define the custom task to delegate
+$taskToDelegate = "GA"  # Full control
+
+# Delegate control for the custom task
+dsacls $containerPath /I:T /G "$($delegateUser):$taskToDelegate"
+
+$extadsch = "\\Dc-01\MEM_Configmgr_2103\SMSSETUP\BIN\X64\extadsch.exe"
+
+Start-Process $extadsch -NoNewWindow 
+
+
+###Installation of DHCP Server Role ###
+Install-WindowsFeature DHCP -IncludeManagementTools
+   
+### ADD DHCP Scope and Range Ip Strat and end Range ### 
+Add-DhcpServerV4Scope -Name "DHCP" -StartRange 192.168.100.50 -EndRange 192.168.100.100 -SubnetMask 255.255.255.0 -State Active
+
+### ADD DNS Server, Router Gateway Options in DHCP ###
+Set-DhcpServerV4OptionValue -DnsServer 192.168.100.2 -Router 192.168.100.1
+
+
+### Set up Lease Duration för 8 hours ###
+Set-DhcpServerV4Scope -ScopeId 192.168.100.2 -LeaseDuration 0.08:00:00 
+
+
+# Set registry key to suppress the DHCP post-installation warning
+#New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\ServerManager\Roles\12" -Name "ConfigurationState" -Value 1 -PropertyType DWORD -Force
+
+
+ #Start-Sleep 15
+# Restart DHCP Server service to apply changes
+Restart-Service DHCPServer -Force 

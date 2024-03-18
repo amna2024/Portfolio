@@ -1,0 +1,79 @@
+# Function to retrieve computer name
+function Get-ComputerName {
+    return (Get-ComputerInfo).CsName
+}
+
+# Function to retrieve DHCP server information
+function Get-DHCPServer {
+    # Add your DHCP server retrieval logic here
+    # For example, check if DHCP service is running on the computer
+    $dhcpService = Get-Service -Name 'DHCPServer' -ErrorAction SilentlyContinue
+    if ($null -ne $dhcpService -and $dhcpService.Status -eq 'Running') {
+        return $True
+    } else {
+        return $False
+    }
+}
+
+# Function to retrieve IP range
+function Get-IPRange {
+    # Add your IP range retrieval logic here
+    $dhcpScope = Get-DhcpServerv4Scope -ErrorAction SilentlyContinue
+    if ($null -ne $dhcpScope) {
+        $startIPAddress = $dhcpScope.StartRange
+        $endIPAddress = $dhcpScope.EndRange
+        return "$startIPAddress - $endIPAddress"
+    } else {
+        return "False"
+    }
+}
+
+# Function to retrieve domain name
+function Get-DomainName {
+    # Add your domain name retrieval logic here
+    return (Get-ADDomain).DNSRoot
+}
+
+# Function to retrieve domain user
+function Get-DomainUser {
+    # Add your domain user retrieval logic here
+    $domainUser = Get-ADUser -Filter * -Properties SamAccountName | Select-Object -First 1 -ExpandProperty SamAccountName
+    if ($domainUser) {
+        return $domainUser
+    } else {
+        return "False"
+    }
+}
+
+# Function to retrieve password length
+function Get-PasswordLength {
+    return 15  # Placeholder for password length
+}
+
+# Create object with computer information
+$computerInfo = [ordered]@{
+    "ComputerName" = Get-ComputerName
+    "DHCPServer" = Get-DHCPServer
+    "IPRange" = Get-IPRange
+    "DomainName" = Get-DomainName
+    "DomainUser" = Get-DomainUser
+    "PasswordLength" = Get-PasswordLength
+}
+
+# Convert object to JSON
+$jsonOutput = $computerInfo | ConvertTo-Json
+
+# Create temp folder if it does not exist
+$tempFolderPath = "C:\Temp"
+if (-not (Test-Path $tempFolderPath)) {
+    New-Item -Path $tempFolderPath -ItemType Directory
+}
+
+# Path to the JSON file
+$outputFilePath = "$tempFolderPath\W5_AD-01_Verify_Assignment_Requirements.json"
+
+# Save JSON to file
+$jsonOutput | Out-File -FilePath $outputFilePath
+
+Write-Host "W5_AD-01_Verify_Assignment_Requirements has been saved to: $outputFilePath"
+Invoke-Item $outputFilePath  # Open the JSON file automatically

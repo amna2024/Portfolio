@@ -1,0 +1,135 @@
+
+# Create SCCM-01 Servers2022 VM with Requirements
+$VName = "SCCM-01"
+$VMPath = "C:\Hyper-V\VMs\$VName"
+$ParentVHDPath = "C:\Hyper-V\VHDS\Server22Template\Virtual Hard Disks\Server22.vhdx"
+$DifferencingVHDPath = "$VMPath\$VName.vhdx"
+$TotalMemory = 8GB
+$TotalCores = 3
+$LAN = "Switch Privet (LAN)"
+$ExtraDisk = "C:\VM\All VM Diskar\SCCM-01-ExtraDisk_Newone.vhdx"
+$ServerName = "DC-01"
+$domain = "Rstile.se"
+$username = "Administrator"
+$Domainname = "Rstile\Administrator"
+$password = ConvertTo-SecureString "Sommar2020" -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential($username, $password)
+$dcred = New-Object System.Management.Automation.PSCredential($Domainname, $password)
+$IP = "192.168.100.3"
+$IP_MASK = 24
+$GATE = "192.168.100.1"
+$DNS = "192.168.100.2"
+
+
+# Check if the VM folder exists, if not, create it
+if (-not (Test-Path $VMPath)) {
+    New-Item -Path $VMPath -ItemType Directory
+}
+
+# Check if the VHDX file is in use by any process
+$DiskInUse = Get-Process | Where-Object { $_.Handles -ne $null } | ForEach-Object {
+    $_.Modules | Where-Object { $_.FileName -eq $DifferencingVHDPath }
+}
+
+if ($DiskInUse) {
+    Write-Host "The disk is in use by process $($DiskInUse.ProcessName). Please close the process and try again."
+    exit 1
+}
+
+# Create a new differencing disk based on the sysprepped VHDX file
+New-VHD -Path $DifferencingVHDPath -ParentPath $ParentVHDPath -Differencing
+
+# Create a new virtual machine
+$vm = New-VM -Name $VName -MemoryStartupBytes $TotalMemory -Generation 2 -Path $VMPath -SwitchName $LAN
+
+# Add the differencing disk to the new VM
+Add-VMHardDiskDrive -VMName $VName -Path $DifferencingVHDPath
+
+# Configure the VM: set the number of processors and disable automatic checkpoints
+Set-VMProcessor -VMName $VName -Count $TotalCores
+Set-VM -Name $VName -AutomaticCheckpointsEnabled $false
+Set-VM -Name $VName -CheckpointType Disabled
+
+$HD = Get-VMHardDiskDrive -VMName $VName
+ Set-VMFirmware $VName -FirstBootDevice $HD
+
+# Add the additional disk to the VM
+Add-VMHardDiskDrive -VMName $VName -Path $ExtraDisk
+
+# Start the VM
+$vm | Start-VM 
+
+
+function wait {
+    $loop = $true;
+    while($loop) {
+        try {
+            $service = Invoke-Command -VMName $VName -Credential $cred -ScriptBlock { 
+                Get-Service
+            } -ErrorAction Stop
+            if($null -eq $($service)) {
+                throw ""
+            }
+            else {
+                $loop = $false
+            }
+        }
+        catch {
+            Write-Host "Wait..." -ForegroundColor Yellow
+            start-sleep -Seconds 5
+        }
+    }
+}
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Static IP Configurations of IP, Gateway, DNs
+    New-NetIPAddress -IPAddress $using:IP -PrefixLength $using:IP_MASK -DefaultGateway $using:GATE -InterfaceAlias "Ethernet"
+    Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses $using:DNS
+
+$diskpartScript = @"
+ select disk 1
+ attributes disk clear readonly
+ online disk
+"@
+$diskpartScript | diskpart
+
+  # Set computername to "SCCM-01"
+    Rename-Computer -NewName $using:ServerName -Force
+
+    #Need to restart the Computer
+    Restart-Computer -Force
+
+}
+
+
+
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Join SCCM-01 to the domain or member of domain of AD-01 serer
+    Add-Computer -ComputerName $using:ServerName -DomainName $using:domain -Credential $using:dcred -Restart
+}
+$cred = $dcred
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Define the path for the shared folder
+    $FolderPath = "C:\MEM_Configmgr_2103"
+
+    D:\MEM_Configmgr_2103.exe /auto
+    while($true) {
+        if(Test-Path $FolderPath\splash.hta) {
+        # Create the shared folder (MEM_Configmgr_2103)
+            New-SmbShare -Name "MEM_Configmgr_2103" -Path $FolderPath -FullAccess "everyone"
+            break;
+        }
+        Start-Sleep 3
+        Write-Host "Extracting..." -ForegroundColor Green
+
+    }
+}
+
+# Open a VMConnect window for the started VM
+$localHostName = (Get-ComputerInfo).CsName
+Start-Process "vmconnect.exe" -ArgumentList "$localHostName $VName"

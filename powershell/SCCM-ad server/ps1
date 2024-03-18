@@ -1,0 +1,108 @@
+# Create AD-01 Servers2022 VM with Requirements
+$VName = "AD-01"
+$VMPath = "C:\Hyper-V\VMs\$VName"
+$ParentVHDPath = "C:\Hyper-V\VHDS\Server22Template\Virtual Hard Disks\Server22.vhdx"
+$DifferencingVHDPath = "$VMPath\$VName.vhdx"
+$TotalMemory = 4GB
+$TotalCores = 2
+$LAN = "Switch Privet (LAN)"
+$domain = "Rstile.se"
+$username = "Administrator"
+$password = ConvertTo-SecureString "Sommar2020" -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential($username, $password)
+$IP = "192.168.100.2"
+$IP_MASK = 24
+$GATE = "192.168.100.1"
+$DNS = "192.168.100.2"
+
+
+# Check if the VM folder exists, if not, create it
+if (-not (Test-Path $VMPath)) {
+    New-Item -Path $VMPath -ItemType Directory
+}
+
+# Check if the VHDX file is in use by any process
+$DiskInUse = Get-Process | Where-Object { $_.Handles -ne $null } | ForEach-Object {
+    $_.Modules | Where-Object { $_.FileName -eq $DifferencingVHDPath }
+}
+
+if ($DiskInUse) {
+    Write-Host "The disk is in use by process $($DiskInUse.ProcessName). Please close the process and try again."
+    exit 1
+}
+
+# Create a new differencing disk based on the sysprepped VHDX file
+New-VHD -Path $DifferencingVHDPath -ParentPath $ParentVHDPath -Differencing
+
+# Create a new virtual machine
+$vm = New-VM -Name $VName -MemoryStartupBytes $TotalMemory -Generation 2 -Path $VMPath -SwitchName $LAN
+
+# Add the differencing disk to the new VM
+Add-VMHardDiskDrive -VMName $VName -Path $DifferencingVHDPath
+
+# Configure the VM: set the number of processors and disable automatic checkpoints
+Set-VMProcessor -VMName $VName -Count $TotalCores
+Set-VM -Name $VName -AutomaticCheckpointsEnabled $false
+Set-VM -Name $VName -CheckpointType Disabled
+
+
+ $HD = Get-VMHardDiskDrive -VMName $VName
+ Set-VMFirmware $VName -FirstBootDevice $HD
+
+
+# Start the VM
+$vm | Start-VM 
+
+
+
+function wait {
+    $loop = $true;
+    while($loop) {
+        try {
+            $service = Invoke-Command -VMName $VName -Credential $cred -ScriptBlock { 
+                Get-Service
+            } -ErrorAction Stop
+            if($null -eq $($service)) {
+                throw ""
+            }
+            else {
+                $loop = $false
+            }
+        }
+        catch {
+            Write-Host "Wait..." -ForegroundColor Yellow
+            start-sleep -Seconds 5
+        }
+    }
+}
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Static IP Configurations of IP, Gateway, DNs
+    New-NetIPAddress -IPAddress $using:IP -PrefixLength $using:IP_MASK -DefaultGateway $using:GATE -InterfaceAlias "Ethernet"
+    Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses $using:DNS
+      
+   #Set computername to "AD-01"
+    Rename-Computer -NewName $using:VName -Force
+
+    #Need to restart the Computer
+    Restart-Computer -Force
+
+}
+
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Join Domain AD-01 serer
+
+    ###Installera Active Directory###
+   Install-windowsFeature "Ad-Domain-Services" -IncludeManagementTools
+
+   ###Promote AD## 
+   Install-ADDSForest -domainname $using:domain -SafeModeAdministratorPassword $using:password -Confirm:$false
+}
+
+
+# Open a VMConnect window for the started VM
+$localHostName = (Get-ComputerInfo).CsName
+Start-Process "vmconnect.exe" -ArgumentList "$localHostName $VName"

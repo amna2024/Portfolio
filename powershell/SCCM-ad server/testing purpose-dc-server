@@ -1,0 +1,94 @@
+$admin = "Rstile\Administrator"
+$pass = "Sommar2020"
+
+Install-WindowsFeature Web-Server, Web-Http-Redirect, Web-Log-Libraries, Web-Request-Monitor, Web-Http-Tracing, Web-Windows-Auth, Web-Net-Ext, Web-Net-Ext45, Web-Asp-Net, Web-Asp-Net45, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Mgmt-Tools,  Web-Mgmt-Compat, Web-Lgcy-Mgmt-Console, Web-Lgcy-Scripting, Web-WMI, Web-Scripting-Tools, NET-Framework-Features, NET-HTTP-Activation, NET-Non-HTTP-Activ, NET-Framework-45-ASPNET, NET-WCF-HTTP-Activation45, NET-WCF-MSMQ-Activation45, NET-WCF-Pipe-Activation45, NET-WCF-TCP-Activation45, BITS, BITS-Compact-Server, MSMQ, RDC, RSAT-Bits-Server, WAS, WAS-NET-Environment, WAS-Config-APIs
+
+D:\adksetup.exe /promptrestart /ceip on /quiet /installpath "c:\program files (x86)\Windows Kits\8.0" /features OptionId.DeploymentTools OptionId.WindowsPreinstallationEnvironment OptionId.ImagingAndConfigurationDesigner OptionId.ICDConfigurationDesigner OptionId.UserStateMigrationTool
+
+
+Mount-DiskImage D:\SQLServer2022-x64.iso
+
+E:\setup.exe /QS /IACCEPTSQLSERVERLICENSETERMS /ACTION="install" /FEATURES=SQLEngine /INSTANCENAME="MSSQLSERVER" /SQLCOLLATION="SQL_Latin1_General_CP1_CI_AS" /TCPENABLED=1 /SQLSYSADMINACCOUNTS=$admin
+
+Dismount-DiskImage D:\SQLServer2022-x64.iso
+
+Install-WindowsFeature UpdateServices-DB
+Start-Process -FilePath "C:\Program Files\Update Services\Tools\WsusUtil.exe" -ArgumentList 'PostInstall SQL_INSTANCE_NAME="localhost" CONTENT_DIR=C:\WSUS' -Wait
+
+$services = 'MSSQLSERVER', 'SQLSERVERAGENT'
+foreach($serviceName in $services) {
+    $service = Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'"
+    $service.Change($null, $null, $null, $null, $null, $null, $admin, $pass)
+    if($service.State -eq 'Running') {
+        Restart-Service $serviceName
+    }
+}
+
+New-Item -ItemType Directory -Path C:\Sources\Redist -Force
+
+# Function to display progress bar
+function Show-ProgressBar {
+    param (
+        [int]$PercentComplete
+    )
+    
+    $ProgressBar = ""
+    $ProgressWidth = 50
+    $CompletedWidth = [math]::Round(($PercentComplete / 100) * $ProgressWidth)
+    $RemainingWidth = $ProgressWidth - $CompletedWidth
+    
+    $ProgressBar += "[" + "█" * $CompletedWidth + (" " * $RemainingWidth) + "]"
+    $ProgressBar += " $PercentComplete%"
+    
+    Clear-Host
+    Write-Host $ProgressBar -ForegroundColor Cyan
+}
+
+# Function to read and display log file contents with progress
+function Read-LogWithProgress {
+    param (
+        [string]$LogFilePath
+    )
+
+    Clear-Host
+    $CMConsole = "C:\Program Files (x86)\Microsoft Configuration Manager\AdminConsole\bin\Microsoft.ConfigurationManagement.exe" 
+    
+    # Check if log file exists
+    if (-not (Test-Path $LogFilePath)) {
+        Write-Host "Log file not found at $LogFilePath!" -ForegroundColor Red
+        return
+    }
+    if(-not (Get-Process | Where-Object ProcessName -eq setupwpf)) {
+        Write-Host "Setup not running!" -ForegroundColor Red
+        return
+    }
+
+    do {
+        $process = Get-Process | Where-Object ProcessName -eq setupwpf
+        $TotalLines = (Get-Content $LogFilePath).Count
+
+        if($TotalLines -lt 47000) {
+            $ProgressStep = ($TotalLines / 47000) * 100
+            Show-ProgressBar -PercentComplete $ProgressStep
+        }
+        elseif (Test-Path $CMConsole)  {
+                 
+
+            Write-Host "SETUP COMPLETE!" -ForegroundColor Green
+            return
+        }
+        
+        Start-Sleep 8
+
+    } while($process)
+}
+
+$setup = "C:\MEM_Configmgr_2103\SMSSETUP\BIN\X64\setup.exe"
+Start-Process -FilePath $setup -ArgumentList "/script D:\ConfigMgrAutoSave.ini"
+Start-Sleep 10
+
+# Specify the path to the ConfigMgrSetup.log file
+$LogFilePath = "C:\ConfigMgrSetup.log"
+
+# Call the function to read and display log file contents with progress
+Read-LogWithProgress -LogFilePath $LogFilePath

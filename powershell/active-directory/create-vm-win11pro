@@ -1,0 +1,87 @@
+$VName = "W2-Win11"
+$VMPath = (Get-VMHost).VirtualMachinePath | ForEach-Object {$_.Substring(0, $_.Length -1)}
+$ParentVHDPath = "D:\Hyper-V\VHDS\Win11_Sysprep\Virtual Hard Disks\Win11.vhdx" 
+$DifferencingVHDPath = "$VMPath\$VName\$VName.vhdx"
+$TotalMemory = 4GB
+$TotalCores = 4
+$LAN = "LAN"
+$username = "User"
+$domain = "Rstile.se"
+$Domainname = "Rstile\Administrator"
+$password = ConvertTo-SecureString "Sommar2020" -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential($username, $password)
+$dcred = New-Object System.Management.Automation.PSCredential($Domainname, $password)
+$IP = "192.168.100.3"
+$IP_MASK = 24
+$GATE = "192.168.100.1"
+$DNS = "192.168.100.2"
+
+if(-not (Test-Path $ParentVHDPath)) {
+    Write-Host "Parent VHD not found:`n$ParentVHDPath"
+    exit 1
+}
+
+# Create a new differencing disk based on the sysprepped VHDX file
+New-VHD -Path $DifferencingVHDPath -ParentPath $ParentVHDPath -Differencing
+
+# Create a new virtual machine
+$vm = New-VM -Name $VName -MemoryStartupBytes $TotalMemory -Generation 2 -Path $VMPath -SwitchName $LAN
+
+# Add the differencing disk to the new VM
+Add-VMHardDiskDrive -VMName $VName -Path $DifferencingVHDPath
+
+# Configure the VM: set the number of processors and disable automatic checkpoints
+Set-VMProcessor -VMName $VName -Count $TotalCores
+Set-VM -Name $VName -AutomaticCheckpointsEnabled $false
+Set-VM -Name $VName -CheckpointType Disabled
+
+$HD = Get-VMHardDiskDrive -VMName $VName
+Set-VMFirmware $VName -FirstBootDevice $HD
+
+# Start VM
+$vm | Start-VM
+
+function wait {
+    Start-Sleep 2
+    $loop = $true;
+    while($loop) {
+        try {
+            $service = Invoke-Command -VMName $VName -Credential $cred -ScriptBlock { 
+                Get-Service
+            } -ErrorAction Stop
+            if($null -eq $($service)) {
+                throw ""
+            }
+            else {
+                $loop = $false
+            }
+        }
+        catch {
+            Write-Host "Wait..." -ForegroundColor Yellow
+            start-sleep -Seconds 5
+        }
+    }
+}
+
+Wait
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    # Static IP Configurations of IP, Gateway, DNs
+    New-NetIPAddress -IPAddress $using:IP -PrefixLength $using:IP_MASK -DefaultGateway $using:GATE -InterfaceAlias "Ethernet"
+    Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses $using:DNS
+
+    # Set computername
+    Rename-Computer -NewName $using:VName -Force
+
+    # Need to restart the Computer
+    Restart-Computer -Force
+}
+
+Start-Sleep 25
+
+Invoke-Command -VMName $VName -Credential $cred -ScriptBlock {
+    Add-Computer -ComputerName $using:VName -DomainName $using:domain -Credential $using:dcred -Restart
+}
+
+# Open a VMConnect-Window for the VM
+$localHostName = (Get-ComputerInfo).CsName
+Start-Process "vmconnect.exe" -ArgumentList "$localHostName $VName"

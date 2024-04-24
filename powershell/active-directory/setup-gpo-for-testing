@@ -1,0 +1,88 @@
+﻿# Run on AD
+#Import the Active Directory module
+Import-Module ActiveDirectory
+
+# Function to create or get existing GPO
+function Get-OrCreateGPO {
+    param (
+        [string]$Name
+    )
+    
+    try {
+        $existingGPO = Get-GPO -Name $Name -ErrorAction Stop
+        Write-Host "GPO '$Name' already exists."
+        return $existingGPO
+    } catch {
+        Write-Host "Creating new GPO '$Name'..."
+        return New-GPO -Name $Name
+    }
+}
+
+# Create or get existing GPO for restricting CMD usage
+$CMDGPO = Get-OrCreateGPO -Name "Restrict CMD Usage"
+
+$params = @{
+    Name      = $CMDGPO.DisplayName
+    Key       = 'HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\System'
+    ValueName = 'DisableCMD'
+    Value     = 2
+    Type      = 'DWORD'
+}
+Set-GPRegistryValue @params
+
+# Create or get existing GPO for restricting PowerShell usage
+$PowerShellGPO = Get-OrCreateGPO -Name "Restrict PowerShell Usage"
+
+$params = @{
+    Name      = $PowerShellGPO.DisplayName
+    Key       = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer'
+    ValueName = 'DisallowRun'
+    Value     = 1
+    Type      = 'DWORD'
+}
+Set-GPRegistryValue @params
+$params = @{
+    Name      = $PowerShellGPO.DisplayName
+    Key       = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun'
+    ValueName = '1'
+    Value     = 'powershell.exe'
+    Type      = 'String'
+}
+Set-GPRegistryValue @params
+
+# Create or get existing GPO for restricting desktop background change
+$BackgroundMarknad = Get-OrCreateGPO -Name "Restrict Background Change Marknad"
+
+$params = @{
+    Name      = $BackgroundMarknad.DisplayName
+    Key       = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System'
+    ValueName = 'Wallpaper'
+    Value     = '\\w3-ad-01\wallpaper\RedWallpaper.jpg'
+    Type      = 'String'
+}
+Set-GPRegistryValue @params
+
+$BackgroundSales = Get-OrCreateGPO -Name "Restrict Background Change Sales"
+
+$params = @{
+    Name      = $BackgroundSales.DisplayName
+    Key       = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System'
+    ValueName = 'Wallpaper'
+    Value     = '\\w3-ad-01\wallpaper\GreenWallpaper.jpg'
+    Type      = 'String'
+}
+Set-GPRegistryValue @params
+
+# Define the target OUs
+$OU_Rstile = "OU=Rstile,DC=Rstile,DC=Se"
+$OU_Sales = "OU=Sales,$OU_Rstile"
+$OU_Marknad = "OU=Marknad,$OU_Rstile"
+
+# Link the GPOs to the appropriate OUs
+New-GPLink -Name $CMDGPO.DisplayName -Target $OU_Rstile
+New-GPLink -Name $PowerShellGPO.DisplayName -Target $OU_Rstile
+New-GPLink -Name $BackgroundMarknad.DisplayName -Target $OU_Marknad
+New-GPLink -Name $BackgroundSales.DisplayName -Target $OU_Sales
+
+# Force GP Update
+gpupdate /force

@@ -1,0 +1,27 @@
+﻿$VName = @("W2-AD-01", "W2-Win11")
+
+foreach($item in $VName) {
+    $VMPath = "$((Get-VMHost).VirtualMachinePath | ForEach-Object {$_.Substring(0, $_.Length -1)})\$item"
+
+    # Stoppa den virtuella maskinen om den körs
+    $vm = Get-VM -Name $item
+    if ($vm.State -eq 'Running') {
+        Stop-VM -Name $item -Force
+    }
+
+    # Ta bort den virtuella maskinen
+    Remove-VM -Name $item -Force
+
+    # Ta bort VM-mappen och alla dess innehåll (inklusive differencing diskar och ytterligare hårddiskar)
+    Remove-Item -Path $VMPath -Recurse -Force
+
+    Write-Output "CleanUpVM.ps1: The virtual machine $item has been removed and its folder has been deleted."
+
+}  
+<#     
+The script is quite simple. It takes the name of the virtual machine as a parameter and then stops and removes the virtual machine. It also removes the folder where the virtual machine was stored. 
+The script is saved in the same folder as the other scripts. 
+Create a new virtual machine 
+The last script is used to create a new virtual machine. 
+# Path: CreateVM.ps1 
+#>

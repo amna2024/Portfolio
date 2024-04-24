@@ -1,0 +1,73 @@
+# Function to retrieve computer name
+function Get-ComputerName {
+    return (Get-ComputerInfo).CsName
+}
+
+# Function to retrieve domain name
+function Get-DomainName {
+    # Add your domain name retrieval logic here
+    return (Get-ADDomain).DNSRoot
+}
+
+# Function to retrieve domain user
+function Get-DomainUser {
+    $who = whoami
+    return $who.Split('\')[1]
+}
+
+# Function to retrieve number of OUs under "Rstile OU"
+function Get-RstileOUCount {
+    $OU = New-Object System.Collections.Generic.List[System.Object]
+    $rstileOU = "OU=Rstile,DC=Rstile,DC=se"  # Update with your actual OU path
+    $ouSearch = Get-ADOrganizationalUnit -Filter * -SearchBase $rstileOU
+
+    foreach ($item in $ouSearch) {
+        $OU.add($item.Name)
+    }
+
+    return $OU
+}
+
+# Function to retrieve number of users under "Rstile OU"
+function Get-RstileUserCount {
+    $Users = New-Object System.Collections.Generic.List[System.Object]
+    $rstileOU = "OU=Rstile,DC=Rstile,DC=se"  # Update with your actual OU path
+    try {
+        $userSearch = Get-ADUser -Filter * -SearchBase $rstileOU
+
+        foreach ($user in $userSearch) {
+            $Users.add($user.SamAccountName)
+        }
+
+    } catch {
+        $Users = "Users not found"
+    }
+    return $Users
+}
+
+# Create object with computer information
+$computerInfo = [ordered]@{
+    "ComputerName" = Get-ComputerName
+    "DomainName" = Get-DomainName
+    "DomainUser" = Get-DomainUser
+    "RstileOU" = Get-RstileOUCount
+    "RstileOUUsers" = Get-RstileUserCount
+}
+
+# Convert object to JSON
+$jsonOutput = $computerInfo | ConvertTo-Json
+
+# Create temp folder if it does not exist
+$tempFolderPath = "C:\Temp"
+if (-not (Test-Path $tempFolderPath)) {
+    New-Item -Path $tempFolderPath -ItemType Directory
+}
+
+# Path to the JSON file
+$outputFilePath = "$tempFolderPath\W2_AD-01_Verify_Assignment_Requirements.json"
+
+# Save JSON to file
+$jsonOutput | Out-File -FilePath $outputFilePath
+
+Write-Host "W2_AD-01_Verify_Assignment_Requirements has been saved to: $outputFilePath"
+Invoke-Item $outputFilePath  # Open the JSON file automatically

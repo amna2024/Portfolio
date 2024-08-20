@@ -976,17 +976,12 @@ sig från säkerhetsincidenter.  
 
 **Rapportering till ledningen**: Utveckla månadsvisa säkerhetsrapporter
 till ledningen. Så att ledningen hålls informerad om
-informationssäkerhetsläget och eventuella åtgärder.  
+informationssäkerhetsläget och eventuella åtgärder.   
 
- 
-
-*Förbättringsfas (Act) * 
-
- 
+*Förbättringsfas (Act) *  
 
 Att inkludera en förbättringsfas i den tvååriga planen för
 informationssäkerhet är avgörande av flera skäl.   
-
  
 
 Genom att ha en dedikerad förbättringsfas kan organisationen
@@ -995,7 +990,6 @@ nya hot, tekniska framsteg och förändrade affärsbehov. Detta gör det
 möjligt för organisationen att hålla sig i framkant av
 informationssäkerhet och anpassa sig till det dynamiska
 hot-landskapet.  
-
  
 
 Förbättringsfasen ger organisationen möjlighet att lära av tidigare
@@ -1005,7 +999,6 @@ identifiera bästa praxis och implementera dem för att öka sin
 säkerhetsnivå.  
 
  
-
 Genom att fokusera på förbättringar kan organisationen identifiera och
 eliminera ineffektivitet eller överflödiga processer inom sitt
 säkerhetsarbete. Detta kan leda till ökad effektivitet och
@@ -1025,35 +1018,28 @@ informationssäkerhet kan organisationen främja en kultur av ständig
 förbättring och innovation. Detta skapar en miljö där alla medarbetare
 är engagerade i att identifiera och implementera förbättringar inom sitt
 ansvarsområde.  
-
  
-
 Följande aktiviteter ska göras under denna fas.  
 
  
-
 **Uppdatering av policyer och riktlinjer**:  Revidera policyer baserat
 på lärdomar från revisioner och övervakning. Vi tycker att det är
 viktigt att policyer och riktlinjer är aktuella och effektiva.  
 
- 
 
 **Tekniska uppgraderingar**: Installera säkerhetsuppdateringar och
 "patchar" regelbundet för att hålla alla system skyddade mot kända
 sårbarheter.  
 
  
-
 **Fortsatt utbildning**: Utveckla och genomföra nya utbildningsmoduler
 baserade på aktuella hot eller inträffade incidenter för att ta lärdom i
 IT-säkerhetsarbetet.  
 
- 
 
 **Automatisering**: Utforska och implementera automatiseringslösningar
 för säkerhetsuppgifter. Detta ökar effektiviteten och minska risken för
 mänskliga fel.  
-
  
 
 **Kapacitetsplanering**: Kapacitetsplanering är en viktig process för
@@ -1074,12 +1060,9 @@ Implementering av kapacitetsplan  
 Övervakning och anpassning  
 
 Dokumentation och rapportering  
-
-  
-
-*Framtid * 
-
  
+
+*Framtid *  
 
 Efter de två första åren, när den initiala tvååriga planen för
 informationssäkerhet har genomförts, är det viktigt för företaget att
@@ -1092,7 +1075,6 @@ företagets tillgångar och upprätthålla en stark säkerhetskultur över
 tiden.  
 
  
-
 **Säkerhetsrevisioner och revisioner:** Fortsätt att planera och
 genomföra årliga interna och externa säkerhetsrevisioner för att
 utvärdera effektiviteten av informationssäkerhetsåtgärderna och
@@ -1101,14 +1083,12 @@ identifiera områden för förbättring.  
 **Incidentresponsövningar:** Fortsätt att planera och genomföra
 incidentresponsövningar regelbundet för att säkerställa att personalen
 är väl förberedd och vet hur man ska reagera vid säkerhetsincidenter.  
-
  
 
 **Utbildning- och säkerhetsmedvetenhetsövningar:** Fortsätt att
 genomföra säkerhetsmedvetenhetsövningar, såsom phishing-simuleringar och
 säkerhetsquiz, för att testa och förbättra anställdas förmåga att
 identifiera och hantera säkerhetshot.  
-
  
 
 **Policyrevideringar och uppdateringar:** Fortsätt att revidera och
@@ -1116,14 +1096,12 @@ uppdatera företagets säkerhetspolicyer och riktlinjer baserat på
 erfarenheter, feedback och förändringar i affärsbehov och
 lagstiftning.  
 
- 
 
 **Tekniska uppgraderingar:** Fortsätt att installera
 säkerhetsuppdateringar, patchar, aktuellt antivirusskydd förslagsvis
 från 3e parts leverantör och nya tekniska lösningar för att säkerställa
 att organisationens system och nätverk förblir skyddade mot nya och
 kända hot.  
-
  
 
 **Kontinuerlig övervakning och logganalyser:** Fortsätt att övervaka
@@ -1131,7 +1109,6 @@ system och nätverk kontinuerligt för att upptäcka och reagera på
 säkerhetsincidenter i realtid. Analysera loggar och händelsedata
 regelbundet för att identifiera eventuella avvikelser eller misstänkta
 aktiviteter.  
-
  
 
 **Fortsatt kapacitetsplanering:** Fortsätt att planera och anpassa
@@ -1140,7 +1117,6 @@ tillväxt och utveckling. Se till att säkerhetsåtgärderna kan skalas upp
 och anpassas efter behov.  
 
  
-
 **Omvärldsbevakning**: Som ett pågående arbete avgörande för att hålla
 företaget uppdaterat, proaktivt och anpassningsbart i en dynamisk och
 ständigt föränderliga säkerhetsmiljö. Det möjliggör snabb respons på nya
@@ -1149,10 +1125,7 @@ strategisk planering och utbildning för att upprätthålla en stark
 säkerhetskultur.  
 
   
-
 **7. Sammanfattning och rekommendationer** 
-
- 
 
 Brådskande åtgärder krävs för att åtgärda omfattande
 it-säkerhetsbrister. Denna rapport har identifierat kritiska frågor
@@ -1161,11 +1134,8 @@ nya VD:n tar över. Dessa risker ökar avsevärt risken för obehörig
 åtkomst, dataintrång och driftstörningar. Dessa sårbarheter kan negativt
 påverka förvärvsprocessen och företagets framtid. 
 
- 
-
 *Resultat* 
 
- 
 
 **Osäkrade anpassade lösningar**: Skräddarsydda lokala it-lösningar
 saknar standardsäkerhetsprotokoll, vilket utsätter dem för manipulation
@@ -1195,22 +1165,14 @@ hållbarhet. 
 **Personalrisker**: Potentiella säkerhetsbrister finns inom
 personalpraxis. 
 
- 
-
-**Föreslagna lösningar:** 
-
- 
+**Föreslagna lösningar:**  
 
 Implementera Zero trust-modellen med support av MSB metodstöd och
 MSS/MSB. Det innebär att ingen enhet är pålitlig och att man samtidigt
 outsourcar delar av säkerhetsfunktionerna till leverantörer som är
-experter och hanterar dessa säkerhetsåtgärder.  
-
- 
+experter och hanterar dessa säkerhetsåtgärder.   
 
 ***Kortsiktigt:*** 
-
- 
 
 **Grundläggande hygienåtgärder:** Implementera multifaktorautentisering,
 uppdatera programvara och firmware på alla enheter, kryptera och
@@ -1222,11 +1184,8 @@ behöver grundläggande utbildning om bästa metoder för IT-säkerhet. 
 **Dokumentation:** Börja dokumentera befintlig IT-infrastruktur och
 procedurer för att minska beroendet av en enda person. 
 
- 
 
-***Medellång sikt (första 6 månaderna):*** 
-
- 
+***Medellång sikt (första 6 månaderna):***  
 
 **Standardisering och migrering**: Utveckla en plan för att migrera från
 anpassade lösningar till standardiserade, säkra system som erbjuds av
@@ -1245,7 +1204,6 @@ fullgott brandskydd. Installera kyla i teknikrummet. 
  
 
 ***Långsiktigt:*** 
-
  
 
 **Kontinuerlig övervakning och förbättring**: Implementera löpande
@@ -1256,12 +1214,9 @@ säkerhetsrevisioner för att identifiera och åtgärda eventuella nya hot. 
 
 **Säkerhetskultur**: Främja en företagsomfattande kultur av
 säkerhetsmedvetenhet och ansvarsfullt beteende samt **utbilda!** 
-
  
 
 ***Slutsats:*** 
-
- 
 
 Triangel AB:s nuvarande it-säkerhet utgör en betydande risk för
 förvärvsprocessen och företagets framtid. Proaktiva åtgärder för att
@@ -1272,18 +1227,6 @@ kan företaget avsevärt förbättra sin it-säkerhetsställning och minimera
 störningar i sin verksamhet. Det är viktigt att Triangel AB kan skydda
 sina tillgångar och deras bristande säkerhet utgör en sårbarhet som kan
 utnyttjas av deras konkurrenter eller kriminella.  
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
 
 **Bilaga -- Risksammanfattning** 
 

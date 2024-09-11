@@ -22,6 +22,8 @@
 **Task:** Migrated servers to AWS and established a secure, scalable hosting environment.  
 **Details:** Deployed containerized applications on ECS using CodePipeline. Implemented Infrastructure as Code (IaC) with CloudFormation for scalable WordPress sites. Developed serverless applications using S3, Lambda, Polly, and Translate.
 
+**Task:** Visiualisation of data anaylsis using AWS Quicksight
+
 # Cybersecurity
 **Task:** Developed a comprehensive cybersecurity framework focusing on proactive threat management.  
 **Details:** Implemented the Zero Trust model with Micro-Segmentation and Behavioral Monitoring (MSB) to protect the company from cyber threats. Emphasized risk assessment, incident response, and data protection strategies.

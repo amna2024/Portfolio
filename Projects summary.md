@@ -27,3 +27,7 @@
 # Cybersecurity
 **Task:** Developed a comprehensive cybersecurity framework focusing on proactive threat management.  
 **Details:** Implemented the Zero Trust model with Micro-Segmentation and Behavioral Monitoring (MSB) to protect the company from cyber threats. Emphasized risk assessment, incident response, and data protection strategies.
+
+# System Center Configuration Manager (SCCM)
+**Task:** Implemented SCCM for comprehensive client and server management.
+**Details:** Installed and configured SCCM on Windows Server 2019, set up Active Directory and SQL Server, and created a demo environment for application deployment. Configured client installations, application management, and boundary settings to demonstrate SCCM's capabilities in managing IT infrastructure efficiently.

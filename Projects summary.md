@@ -1,33 +1,44 @@
 # Microsoft Server
-**Task:** Installed and configured Exchange Server Infrastructure with Windows 10 Outlook.  
-**Details:** Configured Outlook using an external network and implemented rules to block specific domains. Restricted external email sending to enhance security.
+**Task:** Installed and configured the Exchange Server infrastructure with Windows 10 Outlook, where Windows 10 used an external network to configure Outlook.  
+**Details:** Created rules to block email from specific domains and restricted users from sending emails to external addresses.
 
 # Microsoft SharePoint
-**Task:** Migrated data from the legacy website to the new SharePoint site.  
-**Details:** Developed SharePoint site pages and added web parts using PowerShell, ensuring seamless data transition and site functionality.
+**Task:** Created a SharePoint site page and added web parts using PowerShell (PnP script).  
+**Details:** Migrated data from the old website to the new website on SharePoint.
 
 # Server Virtualization
-**Task:** Built a secure IT infrastructure with RAID for data security and implemented directory services for user management.  
-**Details:** Configured Remote Desktop Services (RDS) environments with user profile disks and load balancing, improving system resilience and user experience.
+**Task:** Configured the RDS environment with a desktop environment where RDS must use User Profile Disk for profile management.  
+**Details:** Configured an additional RDS environment with desktops and used a load balancer between servers. Created the IT infrastructure where the server has RAID for data security and directory services to manage users and computers, and configured the requested GPOs.
 
 # Microsoft Azure
-**Task:** Designed and implemented Azure File Service and configured Fslogix applications for a scalable cloud environment.  
-**Details:** Deployed virtual machines, networks, and Active Directory roles using ARM templates. Engineered a secure Azure Network featuring a VPN, internal load balancing, and a hub-and-spoke architecture, resulting in increased network efficiency and security.
+**Task:** Created Azure File Service and configured FSLogix applications.  
+**Details:** 
+1. Configured the Pull server in Azure and allowed clients to fetch the DSC configuration.
+2. Created virtual machines, set up networks, added Active Directory roles, and joined domains using an ARM template.
+3. Designed and implemented load balancing and VMSS with servers running IIS.
 
 # PowerShell
-**Task:** Developed and automated various PowerShell scripts to enhance IT operations.  
-**Details:** Created scripts for OS information retrieval, DHCP, DNS, and firewall configurations. Automated virtual machine creation and role assignments, including Active Directory and security group configurations, leading to significant time savings.
+**Task:** Developed extensive PowerShell scripts for system administration and automation.  
+**Details:** 
+- Created a menu script in PowerShell.
+- Developed scripts for comprehensive retrieval of OS information, demonstrating proficiency in system administration and automation.
+- Created PowerShell scripts for networking tasks such as DHCP, DNS, and firewall configurations.
+- Created virtual machines, added roles like Active Directory, and created security groups and members.
+- + many more other PowerShell projects in the PowerShell folder.
 
 # Amazon Web Services (AWS)
-**Task:** Migrated servers to AWS and established a secure, scalable hosting environment.  
-**Details:** Deployed containerized applications on ECS using CodePipeline. Implemented Infrastructure as Code (IaC) with CloudFormation for scalable WordPress sites. Developed serverless applications using S3, Lambda, Polly, and Translate.
+**Task:** Migrated servers and created a robust, secure, and scalable hosting environment for a web application.  
+**Details:** 
+- Deployed a web application using CodePipeline: Containerized (Dockerized) an application and deployed it on a load-balanced ECS. A server with a 'lolcat' image was uploaded to S3 from the web app.
+- Implemented Infrastructure as Code (IaC) using AWS CloudFormation to create a stable, secure, and potentially scalable WordPress site.
+- Automated the deployment of specific resources and integrated AWS services like Elastic File System (EFS) for file storage and Relational Database Service (RDS) for database management.
+- Utilized CloudFormation templates to streamline the provisioning of the entire WordPress infrastructure.
+- Deep knowledge of AWS Lambda and VMSS.
+- Created a serverless web application using S3 buckets and AWS Lambda.
+- Developed a serverless text-to-speech converter with AWS Polly and AWS Lambda.
+- Created a serverless text translator using AWS Translate and AWS Lambda.
+- Created visualization of data analysis using AWS QuickSight.
 
-**Task:** Visiualisation of data anaylsis using AWS Quicksight
-
-# Cybersecurity
-**Task:** Developed a comprehensive cybersecurity framework focusing on proactive threat management.  
-**Details:** Implemented the Zero Trust model with Micro-Segmentation and Behavioral Monitoring (MSB) to protect the company from cyber threats. Emphasized risk assessment, incident response, and data protection strategies.
-
-# System Center Configuration Manager (SCCM)
-**Task:** Implemented SCCM for comprehensive client and server management.
-**Details:** Installed and configured SCCM on Windows Server 2019, set up Active Directory and SQL Server, and created a demo environment for application deployment. Configured client installations, application management, and boundary settings to demonstrate SCCM's capabilities in managing IT infrastructure efficiently.
+# IT Security
+**Task:** Developed an IT security framework focusing on the Zero Trust model and MSB (Micro-Segmentation and Behavioral Monitoring) to protect the company from cyber threats.  
+**Details:** Emphasized risk assessment, incident response, and data protection to ensure robust security and compliance.

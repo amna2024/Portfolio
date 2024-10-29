@@ -1,0 +1,16 @@
+Movie Endpoints
+POST /api/movies - Create a New Movie
+Request Body:
+
+json
+Copy code
+{
+  "title": "Inception",
+  "genre": "Sci-Fi",
+  "releaseYear": 2010
+}
+
+
+GET /api/movies - Retrieve All Movies
+No body needed for this request.
+Sends a request to retrieve a list of all movies in the application.

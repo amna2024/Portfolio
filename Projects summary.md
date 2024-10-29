@@ -42,3 +42,8 @@
 # IT Security
 **Task:** Developed an IT security framework focusing on the Zero Trust model and MSB (Micro-Segmentation and Behavioral Monitoring) to protect the company from cyber threats.  
 **Details:** Emphasized risk assessment, incident response, and data protection to ensure robust security and compliance.
+
+# JAVA
+**Task:** Developed a Netflix-inspired application in Java using Spring Boot, with a MySQL database for user and movie management functionalities.  
+**Details:** The application includes CRUD operations for managing **Users** and **Movies**, along with **DTOs** for data transfer, RESTful API endpoints, and a layered architecture consisting of **Entities**, **Repositories**, **Services**, **Controllers**, and **DTOs**. 
+

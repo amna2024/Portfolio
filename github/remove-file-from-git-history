@@ -1,0 +1,53 @@
+Title: Removing a File from Git History and Verifying Its Deletion Using `git filter-branch`
+
+Steps to Remove the File and Update the Remote Repository
+
+1. **Rewrite Git History to Remove the File**
+   Use the following command to remove the specific file from the repository history:
+   ```bash
+   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch .terraform/providers/registry.terraform.io/hashicorp/aws/5.80.0/windows_amd64/terraform-provider-aws_v5.80.0_x5.exe" --prune-empty --tag-name-filter cat -- --all
+   ```
+
+2. **Clean Up After History Rewrite**
+   Run the following commands to clean up Git's metadata and optimize the repository:
+   ```bash
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
+   ```
+
+3. **Force Push the Updated History to the Remote Repository**
+   After rewriting the history locally, force-push the changes to the remote repository:
+   ```bash
+   git push origin main --force
+   ```
+
+---
+
+#### Verifying the File's Removal
+
+1. **Check if the File Exists in Git History**
+   To verify if the file has been removed from the repository history, run:
+   ```bash
+   git log --all -- .terraform/providers/registry.terraform.io/hashicorp/aws/5.80.0/windows_amd64/terraform-provider-aws_v5.80.0_x5.exe
+   ```
+   If the file has been successfully removed, this command will not return any commits.
+
+2. **List Files in the Repository and Search for the File**
+   Use the following command to confirm that the file no longer exists in the current branch:
+   - On Unix-based systems:
+     ```bash
+     git ls-tree -r main --name-only | grep terraform-provider-aws_v5.80.0_x5.exe
+     ```
+   - On Windows PowerShell (since `grep` is unavailable, use `Select-String`):
+     ```powershell
+     git ls-tree -r main --name-only | Select-String terraform-provider-aws_v5.80.0_x5.exe
+     ```
+
+---
+
+#### Notes
+- The `git filter-branch` command is a powerful but risky tool that can rewrite commit history. Use it with caution.
+- For safer alternatives, consider using [`git filter-repo`](https://github.com/newren/git-filter-repo) as suggested in the warning.
+- Always take a backup of your repository before running history-altering commands.
+
+---

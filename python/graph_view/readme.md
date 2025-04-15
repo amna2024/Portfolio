@@ -115,9 +115,9 @@ Example CSV:
 
 ```csv
 parent,child,type
-Organization (18735027),Folder: Base (5597205),folder
-Folder: Base (5597205),Folder: Automations (1993149760),folder
-Folder: Automations (1993149760),Project: mega-base-ic-ar-0 (vega-bae-ac-ar-0),project
+Organization (187305027),Folder: Batman (5597205),folder
+Folder: Batman (5500097205),Folder: ABCs (1993149760),folder
+Folder: Abss (1000000000),Project: mega-bat-ic-ar-0 (mega-bat-ac-ar-0),project
 ```
 
 ---
@@ -130,7 +130,7 @@ Folder: Automations (1993149760),Project: mega-base-ic-ar-0 (vega-bae-ac-ar-0),p
 python gph.py
 ```
 
-This will read the CSV file `gcp_hierarchy.csv` and generate the corresponding graph. The resulting graph will be saved as a PNG image (`gcp_hierarchy_graph.png`).
+This will read the CSV file `gcp_hierarchy.csv` and generate the corresponding graph. The resulting graph will be saved as a PNG image (`ABC_hierarchy_graph.png`).
 
 ## **Customization**
 - **Node Colors**: The fill colors for folders and projects are customizable. You can modify the `fillcolor` values in the script to match your preferences.

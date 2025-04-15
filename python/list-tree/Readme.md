@@ -101,9 +101,9 @@ csv
 Copy
 Edit
 parent,child,type
-Organization (12344447),Folder: Base (5597205),folder
-Folder: Base (5597205),Folder: Automations (1993149760),folder
-Folder: Automations (1993149760),Project: mega-base-ic-ar-0 (vega-bae-ac-ar-0),project
+Organization (12344447),Folder: Bat (5597205),folder
+Folder: Bat (5597205),Folder: Auto (1993160),folder
+Folder: Auto (199360),Project: mega-base-ic-ar-0 (mega-bae-ac-ar-0),project
 Customization
 You can modify the following parameters in the script to fit your needs:
 
